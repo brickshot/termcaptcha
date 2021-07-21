@@ -14,14 +14,17 @@ func main() {
   cr := "\r"
   clearline := cr + e + "2K"
 
-  word := "HELLO"
+  var words = []string{
+    "HELLO", "THERE", "ABLAZE", "ABOARD", "BOOHOO", "CHROMA", "ENTREE", "GUFFAW",
+  }
 
-  A := 65  // Uppercase A
+  A := 65 // Uppercase A
 
   // Create and seed the generator.
   // Typically a non-fixed seed should be used, such as time.Now().UnixNano().
   // Using a fixed seed will produce the same output on every run.
-  r := rand.New(rand.NewSource(99))
+  // r := rand.New(rand.NewSource(99))
+  r := rand.New(rand.NewSource(time.Now().UnixNano()))
 
   linelength := 30
   fmt.Printf(clearline + colorRed + "| " + cursorToX(linelength+3) + "|")
@@ -31,15 +34,16 @@ func main() {
   }
 
   var wordx int
+  word := words[r.Intn(len(words))]
   for i := 0; i < 1000; i++ {
-    if (i%100 == 0) {
-        wordx = r.Intn(20 - len(word))
+    if i%100 == 0 {
+      wordx = r.Intn(20 - len(word))
     }
     order := r.Perm(len(pos))
     var line string
-    for _,p := range order {
+    for _, p := range order {
       var character rune
-      if (p >= wordx && p < wordx+len(word)) {
+      if p >= wordx && p < wordx+len(word) {
         character = rune(word[p-wordx])
       } else {
         character = rune(A + r.Intn(24))
