@@ -13,6 +13,7 @@ func main() {
   colorRed := e + "31m"
   cr := "\r"
   clearline := cr + e + "2K"
+  cursorColor := e + "1b[1 q"
 
   var words = []string{
     "HELLO", "THERE", "ABLAZE", "ABOARD", "BOOHOO", "CHROMA", "ENTREE", "GUFFAW",
@@ -27,6 +28,7 @@ func main() {
   r := rand.New(rand.NewSource(time.Now().UnixNano()))
 
   linelength := 30
+  fmt.Printf(cursorColor)
   fmt.Printf(clearline + colorRed + "| " + cursorToX(linelength+3) + "|")
   pos := make([]int, linelength)
   for i := range pos {
@@ -35,8 +37,8 @@ func main() {
 
   var wordx int
   word := words[r.Intn(len(words))]
-  for i := 0; i < 1000; i++ {
-    if i%100 == 0 {
+  for i := 0; i < 400; i++ {
+    if i % 50 == 0 {
       wordx = r.Intn(20 - len(word))
     }
     order := r.Perm(len(pos))
@@ -52,7 +54,7 @@ func main() {
       line += command
     }
     fmt.Printf("%v", line)
-    time.Sleep(10 * time.Millisecond)
+    time.Sleep(40 * time.Millisecond)
   }
   fmt.Printf(clearline + "What word did you see? ")
 
