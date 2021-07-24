@@ -5,7 +5,7 @@ PORT=8000
 
 UUID=`uuid`
 
-curl --no-buffer --limit-rate 700 ${SERVER}:${PORT}/get/${UUID}
+curl -s ${SERVER}:${PORT}/get/${UUID} | slowcat
 
 echo -n "What word did you see? "
 
