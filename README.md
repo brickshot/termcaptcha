@@ -17,7 +17,7 @@ No CAPTCHA is foolproof (this one in particular!). Ultimately a malicious actor 
 ### Usage
 
 1. On a host with a publicly accessible IP address (and prefereably a public hostname), run the service executable. It listens on port 8000 by default.
-1. On the client side before calling your API, hit the `/get` route on the CAPTCHA server with a UUID of your choosing.
+1. On the client side before calling your API, hit the `/get/{uuid}` route on the CAPTCHA server with a UUID of your choosing.
 1. Display the result to the user in a VT100 compatible terminal. The user's terminal can display results so fast that the user will never have time to view it being rendered. You can slow down the display using the following `curl` command:
 
     ```
@@ -30,27 +30,25 @@ No CAPTCHA is foolproof (this one in particular!). Ultimately a malicious actor 
 1. Submit the UUID and the word to `/check/{UUID}?word={word}`
 1. If the response is "OK" then the user was correct.
 1. If the user was correct then you can pass the UUID into your API along with your protected request.
-1. On the backend - your service makes the same request to `/check/{UUID}?word={word}` to confirm that the user passed the CAPTCHA. If you get "OK" back then go ahead and fulfill the request.
+1. On the backend - your service makes a request to `/verify/{UUID}` to confirm that the user passed the CAPTCHA identified by the UUID. If you get "OK" back then go ahead and fulfill the request.
 
 ### Notes
 
-Do not re-use UUIDs. They will only work once.
+Do not re-use UUIDs. They will only work once. Generate a new one each time you request a CAPTCHA.
 
-If the user fails the CAPTCHA, start over. Don't ask them to solve it again.
+If the user fails the CAPTCHA, start over. Don't ask them to solve the same one again.
 
-You only have 2 "checks" per UUID. If the first one passes then the backend of your service can check it again. Once those two checks have happened an error `Too many checks` will be returned.
+You only have 1 "check" and one "verify" per UUID. If the check passes then the backend of your service can verify it. After that an error `Too many checks` will be returned.
 
-#### Bash example:
+#### Examples
 
 ```bash
-
 curl --no-buffer --limit-rate 1000 localhost:8000/get
 ```
 
 The word `LEARNING` is displayed. Note it is not just sent as a continuous string but the letters are drawn randomly to the terminal using VT100 escape codes.
 
-
 ### Does this stop someone DOS-ing my service?
 
-No, nor does it stop someone from DOS-ing the CAPTCHA service itself.
+No.
 
